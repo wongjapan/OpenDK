@@ -31,6 +31,7 @@
 
 use App\Models\DataDesa;
 use App\Models\Penduduk;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
@@ -47,15 +48,11 @@ Route::get('berita', function () {
 
 // Redirect if apps not installed
 Route::group(['middleware' => 'installed'], function () {
-    Route::namespace('Auth')->group(function () {
-        Route::get('login', ['as' => 'login', 'uses' => 'AuthController@index']);
-        Route::post('login', ['as' => 'login', 'uses' => 'AuthController@loginProcess']);
-        //Route::get('register', ['as' => 'register', 'uses' => 'AuthController@register']);
-        //Route::post('register', ['as' => 'register', 'uses' => 'AuthController@registerProcess']);
-    });
+    Auth::routes([
+        'register' => false,
+    ]);
 
-    Route::group(['middleware' => 'sentinel_access:admin'], function () {
-        Route::get('logout', ['as' => 'logout', 'uses' => 'Auth\AuthController@logout']);
+    Route::group(['middleware' => 'auth:web'], function () {
 
         // Prefix URL for Setting
         Route::group(['prefix' => 'setting'], function () {
@@ -269,7 +266,7 @@ Route::group(['middleware' => 'installed'], function () {
     /**
      * Group Routing for Halaman Dahsboard
      */
-    Route::group(['middleware' => 'sentinel_access:admin'], function () {
+    Route::group(['middleware' => 'auth:web'], function () {
         Route::get('/dashboard', 'DashboardController')->name('dashboard');
 
         /**
