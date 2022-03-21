@@ -79,4 +79,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => 'laporan-penduduk'], function () {
         Route::post('/', 'Api\LaporanPendudukController@store');
     });
+
+    /**
+     * Surat Opensid
+     */
+    Route::group(['prefix' => 'pengesahan'], function () {
+        Route::post('/', 'Api\PengesahanController@store');
+    });
 });
