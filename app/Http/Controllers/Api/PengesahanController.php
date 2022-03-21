@@ -31,12 +31,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\DataDesa;
-use Illuminate\Http\Request;
+use App\Models\DokumenSid;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
+use App\Http\Requests\DokumenSidRequest;
 
 class PengesahanController extends Controller
 {
+    public const PATHUPLOAD = "public/sid";
+    
     /**
      * Create a new AuthController instance.
      *
@@ -47,27 +51,25 @@ class PengesahanController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function store(Request $request)
+    public function store(DokumenSidRequest $request)
     {
         $desa = DataDesa::where('desa_id', '=', $request->kode_desa)->first();
         if ($desa == null) {
             return response()->json(['status' => false, 'message' => 'Desa tidak terdaftar' ]);
         }
-
-        $this->validate($request, [
-            'surat' => 'file|mimes:rtf|max:51200',
-        ]);
-
+         
         try {
             // Upload file zip temporary.
             $file = $request->file('surat');
-            $file->storeAs('public/sid', $name = $file->getClientOriginalName());
-
-            dd($file);
-        } catch (\Exception $e) {
-            echo "eror";
-            dd($e);
-            return back()->with('error', 'Import data gagal.');
-        }
+            $upload = $file->storeAs(self::PATHUPLOAD, $name = $file->getClientOriginalName());
+            DokumenSid::insert([
+                'id_sid' => $request->id_sid,
+                'data_desa_id' => $desa->id,
+                'path' => $upload
+            ]);
+            return response()->json(['status' => true, 'message' => 'berhasil kirim dokumen' ]);
+        } catch (Throwable $e) {
+            response()->json(['status' => false, 'message' => 'error' ]);
+        }  
     }
 }
