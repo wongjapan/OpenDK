@@ -31,16 +31,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DokumenSidRequest;
 use App\Models\DataDesa;
 use App\Models\DokumenSid;
-use App\Http\Controllers\Controller;
-use Illuminate\Database\QueryException;
-use App\Http\Requests\DokumenSidRequest;
 
 class PengesahanController extends Controller
 {
     public const PATHUPLOAD = "public/sid";
-    
+
     /**
      * Create a new AuthController instance.
      *
@@ -57,7 +56,7 @@ class PengesahanController extends Controller
         if ($desa == null) {
             return response()->json(['status' => false, 'message' => 'Desa tidak terdaftar' ]);
         }
-         
+
         try {
             // Upload file zip temporary.
             $file = $request->file('surat');
@@ -70,6 +69,6 @@ class PengesahanController extends Controller
             return response()->json(['status' => true, 'message' => 'berhasil kirim dokumen' ]);
         } catch (Throwable $e) {
             response()->json(['status' => false, 'message' => 'error' ]);
-        }  
+        }
     }
 }
