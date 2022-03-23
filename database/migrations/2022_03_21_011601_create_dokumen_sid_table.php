@@ -46,8 +46,8 @@ class CreateDokumenSidTable extends Migration
             $table->integer('id_sid');
             $table->integer('data_desa_id');
             $table->string('nama_surat', 100);
-            $table->string('nik',16);
-            $table->string('nama_penduduk',100);
+            $table->string('nik', 16);
+            $table->string('nama_penduduk', 100);
             $table->string('path', 255);
             $table->dateTime('imported_at')->nullable(true);
             $table->timestamps();

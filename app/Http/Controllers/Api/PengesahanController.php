@@ -31,10 +31,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\DataDesa;
-use App\Models\LayananSuratDesa;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LayananSuratRequest;
+use App\Models\DataDesa;
+use App\Models\LayananSuratDesa;
 
 class PengesahanController extends Controller
 {
@@ -68,7 +68,7 @@ class PengesahanController extends Controller
                 'nama_surat' => $request->nama_surat,
                 'nik' => $request->nik,
                 'nama_penduduk' => $request->nama_penduduk,
-                 
+
             ]);
             return response()->json(['status' => true, 'message' => 'berhasil kirim dokumen' ]);
         } catch (Throwable $e) {

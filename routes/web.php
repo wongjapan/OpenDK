@@ -577,15 +577,12 @@ Route::group(['middleware' => 'installed'], function () {
          * Group Routing for Layanan
          */
 
-        
-        Route::group(['namespace' => 'layanan', 'prefix' => 'layanan'], function() {
+        Route::group(['namespace' => 'layanan', 'prefix' => 'layanan'], function () {
             //Routes for Layanan Desa
             Route::group(['prefix' => 'suratdesa'], function () {
                 Route::get('/', ['as' => 'layanan.suratdesa.index', 'uses' => 'LayananSuratDesaController@index']);
-                
             });
         });
-        
     });
 
     Route::group(['middleware' => ['web']], function () {
