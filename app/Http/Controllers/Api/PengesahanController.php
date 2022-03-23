@@ -31,10 +31,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\DokumenSidRequest;
 use App\Models\DataDesa;
-use App\Models\DokumenSid;
+use App\Models\LayananSuratDesa;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\LayananSuratRequest;
 
 class PengesahanController extends Controller
 {
@@ -50,7 +50,7 @@ class PengesahanController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function store(DokumenSidRequest $request)
+    public function store(LayananSuratRequest $request)
     {
         $desa = DataDesa::where('desa_id', '=', $request->kode_desa)->first();
         if ($desa == null) {
@@ -61,10 +61,14 @@ class PengesahanController extends Controller
             // Upload file zip temporary.
             $file = $request->file('surat');
             $upload = $file->storeAs(self::PATHUPLOAD, $name = $file->getClientOriginalName());
-            DokumenSid::insert([
+            LayananSuratDesa::insert([
                 'id_sid' => $request->id_sid,
                 'data_desa_id' => $desa->id,
-                'path' => $upload
+                'path' => $upload,
+                'nama_surat' => $request->nama_surat,
+                'nik' => $request->nik,
+                'nama_penduduk' => $request->nama_penduduk,
+                 
             ]);
             return response()->json(['status' => true, 'message' => 'berhasil kirim dokumen' ]);
         } catch (Throwable $e) {

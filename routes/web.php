@@ -572,6 +572,20 @@ Route::group(['middleware' => 'installed'], function () {
                 Route::get('statistik', ['as' => 'admin-komplain.statistik', 'uses' => 'AdminKomplainController@statistik']);
             });
         });
+
+        /**
+         * Group Routing for Layanan
+         */
+
+        
+        Route::group(['namespace' => 'layanan', 'prefix' => 'layanan'], function() {
+            //Routes for Layanan Desa
+            Route::group(['prefix' => 'suratdesa'], function () {
+                Route::get('/', ['as' => 'layanan.suratdesa.index', 'uses' => 'LayananSuratDesaController@index']);
+                
+            });
+        });
+        
     });
 
     Route::group(['middleware' => ['web']], function () {

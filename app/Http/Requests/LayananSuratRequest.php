@@ -33,7 +33,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DokumenSidRequest extends FormRequest
+class LayananSuratRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -56,6 +56,9 @@ class DokumenSidRequest extends FormRequest
             'id_sid' =>   'required',
             'kode_desa' =>  'required|string|min:13|max:13',
             'surat'=> 'required|mimes:rtf|max:10000',
+            'nama_surat' =>  'required',
+            'nik' =>  'required',
+            'nama_penduduk' =>  'required',
         ];
     }
 }

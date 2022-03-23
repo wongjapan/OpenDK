@@ -42,9 +42,12 @@ class CreateDokumenSidTable extends Migration
      */
     public function up()
     {
-        Schema::create('dokumen_sid', function (Blueprint $table) {
+        Schema::create('das_layanan_surat_desa', function (Blueprint $table) {
             $table->integer('id_sid');
             $table->integer('data_desa_id');
+            $table->string('nama_surat', 100);
+            $table->string('nik',16);
+            $table->string('nama_penduduk',100);
             $table->string('path', 255);
             $table->dateTime('imported_at')->nullable(true);
             $table->timestamps();
@@ -59,6 +62,6 @@ class CreateDokumenSidTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dokumen_sid');
+        Schema::dropIfExists('das_dokumen_sid');
     }
 }

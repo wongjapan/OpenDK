@@ -145,6 +145,8 @@
                             <a href="{{ route('data.program-bantuan.index') }}"><i class="fa fa-circle-o"></i>Program Bantuan</a></li>
                         @endif
 
+                       
+
                         @if($user->hasAnyAccess(['admin', 'data-anggaranrealisasi', 'data-anggarandesa', 'data-laporanapbdes']))
                         <li class="treeview {{ (Request::is(['data/anggaran-realisasi/*','data/anggaran-realisasi' ,'data/anggaran-desa/*', 'data/anggaran-desa', 'data/laporan-apbdes'])? 'active' : '') }}">
                             <a href="#"><i class="fa fa-circle-o"></i>Finansial
@@ -187,6 +189,20 @@
                         <li {{ (Request::is(['admin-komplain', 'admin-komplain/*'])? 'class=active' : '') }}><a href="{{ route('admin-komplain.index') }}"><i class="fa fa-circle-o"></i>Daftar Keluhan</a></li>
                         <li {{ (Request::is(['admin-komplain/statistik'])? 'class=active' : '') }}><a href="{{ route('admin-komplain.statistik') }}"><i class="fa fa-circle-o"></i>Statistik</a></li>
 
+                    </ul>
+                </li>
+                @endif
+
+                @if($user->hasAnyAccess(['admin', 'layanan']))
+                <li class="treeview {{ (Request::is(['layanan/*'])? 'active' : '') }}"><a href="#"><i class="fa fa-comments-o"></i> <span>Layanan</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+
+                        <li {{ (Request::is(['layanan/suratdesa/*'])? 'class=active' : '') }}><a href="{{ route('layanan.suratdesa.index') }}"><i class="fa fa-circle-o"></i>Surat Desa</a></li>
+ 
                     </ul>
                 </li>
                 @endif
