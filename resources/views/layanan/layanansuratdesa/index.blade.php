@@ -1,5 +1,7 @@
 @extends('layouts.dashboard_template')
 
+@include('layouts.fragments.sweetalert2')
+
 @section('content')
 
 <!-- Content Header (Page header) -->
@@ -36,23 +38,20 @@
 
 								@foreach($surat as $item)
 									<tr>
-
 										<td>
-
 											<a href="" class="btn btn-flat bg-purple btn-sm" title="Unduh Surat RTF" target="_blank">
 												<i class="fa fa-file-word-o"></i>
 											</a>
-											<a href=" " target="_blank" class="btn btn-social btn-flat bg-olive btn-sm"
+										
+											<a href="http://localhost/afila/premium/index.php/keluar/kirim_kecamatan/6"
+												class="btn btn-flat bg-light-blue btn-sm" title="Daftar Dokumen" target="_blank"><i
+													class="fa fa-file"></i>
+												</a>
+												<a href=" " target="_blank" class="btn btn-social btn-flat bg-olive btn-sm"
 												title="Unduh Lampiran"><i class="fa fa-paperclip"></i> Lampiran
 											</a>
-
-											<a href="http://localhost/afila/premium/index.php/keluar/kirim_kecamatan/6"
-												class="btn btn-flat bg-light-blue btn-sm" title="Cetak Surat PDF" target="_blank"><i
-													class="fa fa-upload"></i>
-												</a>
-												
-												<a href=" " target="_blank" class="btn btn-social btn-flat bg-light-blue btn-sm"
-												title="Unduh Lampiran"><i class="fa fa-paperclip"></i> Setujui
+												<a href="javascript:;" class="btn btn-social btn-flat bg-light-blue btn-sm setuju"
+												title="Setuju" data-id="{{  $item->id_sid }}" data-desa="{{ $item->data_desa_id }}" ><i class="fa fa-check-square-o"></i> Setujui
 											</a>
  
 
@@ -85,4 +84,34 @@
 
 @push('scripts')
 	@include('forms.delete-modal')
+
+	<script>
+		$(function () {
+			$('a.setuju').click(function (e) { 
+				e.preventDefault();
+				let that = $(this);
+				let id_sid = that.data('id');
+				let id_desa = that.data('desa');
+				Swal.fire({
+					title: 'Login Form',
+					html: ` 
+					{!! Form::open(['id' => 'surat', 'method' => 'POST', 'route'=>  'layanan.suratdesa.setuju']) !!}
+					<input type="hidden" name="id" value=${id_sid} >
+					<input type="hidden" name="iddesa" value=${id_desa} >
+					{!! Form::close() !!}
+					`,
+					confirmButtonText: 'Setuju',
+					focusConfirm: false,
+					 
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$('form#surat').submit();
+					}
+			 
+				})
+			});
+		 
+		
+		});
+	</script>
 @endpush

@@ -31,18 +31,23 @@
 
 namespace App\Http\Controllers\Layanan;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\LayananSuratDesa;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class LayananSuratDesaController extends Controller
 {
     public function index()
     {
-        $page_title       = 'Dokumen SID';
-        $page_description = 'Daftar Dokumen SID yang Masuk';
+        
+        
+        $page_title       = 'Lyanan Surat Desa';
+        $page_description = 'Daftar Layanan Surat Desa';
 
-        $surat         = LayananSuratDesa::with(['dataDesa'])->latest()->paginate(10); // TODO : Gunakan datatable
-
+        $surat         = LayananSuratDesa::with(['dataDesa'])->latest()->paginate(10);  
         return view('layanan.layanansuratdesa.index', compact('page_title', 'page_description', 'surat'));
     }
 
@@ -50,4 +55,75 @@ class LayananSuratDesaController extends Controller
     {
         // return redirect()->route('informasi.regulasi.show', $regulasi->id)->with('success', 'Regulasi berhasil disimpan!');
     }
+
+    /**
+     * Return view count for all pages on the site.
+     * You may supply an integer if you would like to
+     * restrict counted views to a certain amount of days.
+     *
+     * Example: Show total views for the last 30 days
+     * Counter::allHits(30)
+     *
+     * @param object $data
+     * @return string  
+     */
+
+    public function createQrcode($data)
+    {
+         
+        // dd('app/'.$data->path);
+        $surat         = storage_path('app/'.$data->path);
+        // dd($surat);
+        $input         = $data['input'];
+        $config        = $data['config'];
+        $foreqr        = '#000000';
+        $nama_surat_qr = pathinfo($surat, PATHINFO_FILENAME);
+        $check_surat = route("layanan/suratdesa");
+        
+        $qrcode = [
+            'pathqr' => storage_path(),
+            'namaqr' => $nama_surat_qr,
+            'isiqr'  => $check_surat,
+            'logoqr' => $logoqr,
+            'sizeqr' => 6,
+            'foreqr' => $foreqr,
+            'viewqr' => base_url(LOKASI_MEDIA . '' . $nama_surat_qr . '.png'),
+        ];
+        $this->session->qrcode = $qrcode;
+        qrcode_generate($qrcode['pathqr'], $qrcode['namaqr'], $qrcode['isiqr'], $qrcode['logoqr'], $qrcode['sizeqr'], $qrcode['foreqr']);
+
+        // ambil logo
+        // if ($this->profil->file_logo == '') {
+        //     $logo = public_path('img/no-image.png');
+        // } else {
+        //     $logo          = explode('/',$this->profil->file_logo);
+        //     $logo          = end($logo);
+        //     $logo          = storage_path('app/public/profil/file_logo/'.$logo);
+        // }
+        
+        
+        
+        QrCode::eyeColor(0, 255, 100, 255, 0, 0, 0)
+        ->errorCorrection('H')
+        ->generate( $nama_surat_qr, storage_path('app/public/qrcode/'.$nama_surat_qr.'.svg'));
+      
+    }
+    
+    public function setuju(Request $request)
+    {
+        $id_sid = $request->id;
+        $id_desa = $request->iddesa;
+        $surat = LayananSuratDesa::where([
+            'id_sid' => $id_sid,
+            'data_desa_id' => $id_desa
+        ])->first();
+        $this->createQrcode($surat);
+    }
+
+    public function downloadSurat($file_name)
+    {
+        $file = Storage::disk('public/sid')->get($file_name);
+        return (new Response($file, 200));
+    }
+
 }

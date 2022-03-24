@@ -31,11 +31,12 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class LayananSuratDesa extends Model
 {
-    protected $table     = 'das_dokumen_sid';
+    protected $table     = 'das_layanan_surat_desa';
 
     protected $fillable = ['data_desa_id','id_sid','path', 'nama_surat', 'nik', 'nama_penduduk'];
 

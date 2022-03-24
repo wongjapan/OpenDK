@@ -39,7 +39,7 @@ use Illuminate\Support\Carbon;
  * @param string $content
  * @return string
  */
-if (! function_exists('get_tag_image')) {
+if (!function_exists('get_tag_image')) {
     function get_tag_image(string $content)
     {
         if (preg_match('/<img.+?src="(.+?)"/', $content, $match)) {
@@ -134,7 +134,7 @@ function respon_meta($code, $message)
 {
     $meta = [
         'code' => $code,
-        'message' => $message
+        'message' => $message,
     ];
     return $meta;
 }
@@ -151,7 +151,7 @@ function convert_xml_to_array($filename)
         \Log::info([
             "ERROR MESSAGE" => $e->getMessage(),
             "LINE" => $e->getLine(),
-            "FILE" => $e->getFile()
+            "FILE" => $e->getFile(),
         ]);
         return false;
         // throw new \UnexpectedValueException(trans('message.news.import-error'), 1);
@@ -161,7 +161,7 @@ function convert_xml_to_array($filename)
 function convert_born_date_to_age($date)
 {
     $from = new DateTime($date);
-    $to   = new DateTime('today');
+    $to = new DateTime('today');
     return $from->diff($to)->y;
 }
 
@@ -215,13 +215,13 @@ function get_words($sentence, $count = 10)
 function diff_for_humans($date)
 {
     Carbon::setLocale('id');
-    return  Carbon::parse($date)->diffForHumans();
+    return Carbon::parse($date)->diffForHumans();
 }
 
 function format_date($date)
 {
     Carbon::setLocale('id');
-    return  Carbon::parse($date)->toDayDateTimeString();
+    return Carbon::parse($date)->toDayDateTimeString();
 }
 
 function kuartal_bulan()
@@ -246,7 +246,7 @@ function kuartal_bulan()
             10 => 'Oktober',
             11 => 'November',
             12 => 'Desember',
-        ]
+        ],
     ];
 }
 
@@ -268,7 +268,7 @@ function semester()
             10 => 'Oktober',
             11 => 'November',
             12 => 'Desember',
-        ]
+        ],
     ];
 }
 
@@ -282,7 +282,7 @@ function status_rekam()
         5 => 'PRINT READY RECORD',
         6 => 'CARD SHIPPED',
         7 => 'SENT FOR CARD PRINTING',
-        8 => 'CARD ISSUED'
+        8 => 'CARD ISSUED',
     ];
 }
 
@@ -317,35 +317,87 @@ function is_user($url = null, $sex = 1)
     return is_img($url, $default);
 }
 
-if (! function_exists('divnum')) {
+if (!function_exists('divnum')) {
     function divnum($numerator, $denominator)
     {
         return $denominator == 0 ? 0 : ($numerator / $denominator);
     }
 }
-    function terbilang($angka)
-    {
-        $angka=abs($angka);
-        $baca =["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+function terbilang($angka)
+{
+    $angka = abs($angka);
+    $baca = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
 
-        $terbilang="";
-        if ($angka < 12) {
-            $terbilang= " " . $baca[$angka];
-        } elseif ($angka < 20) {
-            $terbilang= terbilang($angka - 10) . " Belas";
-        } elseif ($angka < 100) {
-            $terbilang= terbilang($angka / 10) . " Puluh" . terbilang($angka % 10);
-        } elseif ($angka < 200) {
-            $terbilang= " seratus" . terbilang($angka - 100);
-        } elseif ($angka < 1000) {
-            $terbilang= terbilang($angka / 100) . " Ratus" . terbilang($angka % 100);
-        } elseif ($angka < 2000) {
-            $terbilang= " seribu" . terbilang($angka - 1000);
-        } elseif ($angka < 1000000) {
-            $terbilang= terbilang($angka / 1000) . " Ribu" . terbilang($angka % 1000);
-        } elseif ($angka < 1000000000) {
-            $terbilang= terbilang($angka / 1000000) . " Juta" . terbilang($angka % 1000000);
-        }
-
-        return $terbilang;
+    $terbilang = "";
+    if ($angka < 12) {
+        $terbilang = " " . $baca[$angka];
+    } elseif ($angka < 20) {
+        $terbilang = terbilang($angka - 10) . " Belas";
+    } elseif ($angka < 100) {
+        $terbilang = terbilang($angka / 10) . " Puluh" . terbilang($angka % 10);
+    } elseif ($angka < 200) {
+        $terbilang = " seratus" . terbilang($angka - 100);
+    } elseif ($angka < 1000) {
+        $terbilang = terbilang($angka / 100) . " Ratus" . terbilang($angka % 100);
+    } elseif ($angka < 2000) {
+        $terbilang = " seribu" . terbilang($angka - 1000);
+    } elseif ($angka < 1000000) {
+        $terbilang = terbilang($angka / 1000) . " Ribu" . terbilang($angka % 1000);
+    } elseif ($angka < 1000000000) {
+        $terbilang = terbilang($angka / 1000000) . " Juta" . terbilang($angka % 1000000);
     }
+
+    return $terbilang;
+}
+
+function qrcode_generate($pathqr, $namaqr, $isiqr, $logoqr, $sizeqr, $foreqr)
+{
+    $barcodeobj = new TCPDF2DBarcode($isiqr, 'QRCODE,H');
+
+    if (! empty($foreqr)) {
+        if ($foreqr[0] == '#') {
+            $foreqr = substr($foreqr, 1);
+        }
+        $split = str_split($foreqr, 2);
+        $r     = hexdec($split[0]);
+        $g     = hexdec($split[1]);
+        $b     = hexdec($split[2]);
+    }
+
+    //Hasilkan QRCode
+    $imgData  = $barcodeobj->getBarcodePngData($sizeqr, $sizeqr, [$r, $g, $b]);
+    $filename = storage_path('app/public/qrcode/' . $pathqr . $namaqr . '.png');
+    file_put_contents($filename, $imgData);
+
+    //Ubah backround transparan ke warna putih supaya terbaca qrcode scanner
+    $src_qr    = imagecreatefrompng($filename);
+    $sizeqrx   = imagesx($src_qr);
+    $sizeqry   = imagesy($src_qr);
+    $backcol   = imagecreatetruecolor($sizeqrx, $sizeqry);
+    $newwidth  = $sizeqrx;
+    $newheight = ($sizeqry / $sizeqrx) * $newwidth;
+    $color     = imagecolorallocatealpha($backcol, 255, 255, 255, 1);
+    imagefill($backcol, 0, 0, $color);
+    imagecopyresampled($backcol, $src_qr, 0, 0, 0, 0, $newwidth, $newheight, $sizeqrx, $sizeqry);
+    imagepng($backcol, $filename);
+    imagedestroy($src_qr);
+    imagedestroy($backcol);
+
+    //Tambah Logo
+    $logopath = $logoqr; // Logo yg tampil di tengah QRCode
+    $QR       = imagecreatefrompng($filename);
+    $logo     = imagecreatefromstring(file_get_contents($logopath));
+    imagecolortransparent($logo, imagecolorallocatealpha($logo, 0, 0, 0, 127));
+    imagealphablending($logo, false);
+    imagesavealpha($logo, true);
+    $QR_width       = imagesx($QR);
+    $QR_height      = imagesy($QR);
+    $logo_width     = imagesx($logo);
+    $logo_height    = imagesy($logo);
+    $logo_qr_width  = $QR_width / 4;
+    $scale          = $logo_width / $logo_qr_width;
+    $logo_qr_height = $logo_height / $scale;
+    imagecopyresampled($QR, $logo, $QR_width / 2.5, $QR_height / 2.5, 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
+    imagepng($QR, $filename);
+    imagedestroy($QR);
+}

@@ -581,6 +581,7 @@ Route::group(['middleware' => 'installed'], function () {
             //Routes for Layanan Desa
             Route::group(['prefix' => 'suratdesa'], function () {
                 Route::get('/', ['as' => 'layanan.suratdesa.index', 'uses' => 'LayananSuratDesaController@index']);
+                Route::post('setuju', ['as' => 'layanan.suratdesa.setuju', 'uses' => 'LayananSuratDesaController@setuju']);
             });
         });
     });
