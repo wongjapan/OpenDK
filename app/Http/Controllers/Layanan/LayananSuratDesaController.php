@@ -77,6 +77,7 @@ class LayananSuratDesaController extends Controller
         $foreqr        = '#000000';
         $nama_surat_qr = pathinfo($surat, PATHINFO_FILENAME);
         $check_surat = route("layanan/suratdesa");
+        $logoqr = is_logo($this->profil->file_logo);
 
         $qrcode = [
             'pathqr' => storage_path(),
@@ -85,8 +86,7 @@ class LayananSuratDesaController extends Controller
             'logoqr' => $logoqr,
             'sizeqr' => 6,
             'foreqr' => $foreqr,
-            'viewqr' => base_url(LOKASI_MEDIA . '' . $nama_surat_qr . '.png'),
-        ];
+         ];
         $this->session->qrcode = $qrcode;
         qrcode_generate($qrcode['pathqr'], $qrcode['namaqr'], $qrcode['isiqr'], $qrcode['logoqr'], $qrcode['sizeqr'], $qrcode['foreqr']);
 
