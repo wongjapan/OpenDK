@@ -352,7 +352,9 @@ function terbilang($angka)
 
 function qrcode_generate($pathqr, $namaqr, $isiqr, $logoqr, $sizeqr, $foreqr)
 {
-    $barcodeobj = new TCPDF2DBarcode($isiqr, 'QRCODE,H');
+    $barcode = new Com\Tecnick\Barcode\Barcode();
+
+    
 
     if (! empty($foreqr)) {
         if ($foreqr[0] == '#') {

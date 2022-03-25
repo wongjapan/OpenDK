@@ -40,6 +40,7 @@ class DashboardController extends Controller
 {
     public function __invoke()
     {
+        $barcode = new \Com\Tecnick\Barcode\Barcode();
         $page_title = 'Dashboard';
         $data = [
             'desa' => DataDesa::count(),
