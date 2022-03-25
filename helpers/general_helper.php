@@ -354,8 +354,6 @@ function qrcode_generate($pathqr, $namaqr, $isiqr, $logoqr, $sizeqr, $foreqr)
 {
     $barcode = new Com\Tecnick\Barcode\Barcode();
 
-    
-
     if (! empty($foreqr)) {
         if ($foreqr[0] == '#') {
             $foreqr = substr($foreqr, 1);

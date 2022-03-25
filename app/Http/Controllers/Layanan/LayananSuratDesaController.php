@@ -31,10 +31,10 @@
 
 namespace App\Http\Controllers\Layanan;
 
+use App\Http\Controllers\Controller;
+use App\Models\LayananSuratDesa;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\LayananSuratDesa;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -42,12 +42,10 @@ class LayananSuratDesaController extends Controller
 {
     public function index()
     {
-        
-        
         $page_title       = 'Lyanan Surat Desa';
         $page_description = 'Daftar Layanan Surat Desa';
 
-        $surat         = LayananSuratDesa::with(['dataDesa'])->latest()->paginate(10);  
+        $surat         = LayananSuratDesa::with(['dataDesa'])->latest()->paginate(10);
         return view('layanan.layanansuratdesa.index', compact('page_title', 'page_description', 'surat'));
     }
 
@@ -65,12 +63,12 @@ class LayananSuratDesaController extends Controller
      * Counter::allHits(30)
      *
      * @param object $data
-     * @return string  
+     * @return string
      */
 
     public function createQrcode($data)
     {
-         
+
         // dd('app/'.$data->path);
         $surat         = storage_path('app/'.$data->path);
         // dd($surat);
@@ -79,7 +77,7 @@ class LayananSuratDesaController extends Controller
         $foreqr        = '#000000';
         $nama_surat_qr = pathinfo($surat, PATHINFO_FILENAME);
         $check_surat = route("layanan/suratdesa");
-        
+
         $qrcode = [
             'pathqr' => storage_path(),
             'namaqr' => $nama_surat_qr,
@@ -100,15 +98,12 @@ class LayananSuratDesaController extends Controller
         //     $logo          = end($logo);
         //     $logo          = storage_path('app/public/profil/file_logo/'.$logo);
         // }
-        
-        
-        
+
         QrCode::eyeColor(0, 255, 100, 255, 0, 0, 0)
         ->errorCorrection('H')
-        ->generate( $nama_surat_qr, storage_path('app/public/qrcode/'.$nama_surat_qr.'.svg'));
-      
+        ->generate($nama_surat_qr, storage_path('app/public/qrcode/'.$nama_surat_qr.'.svg'));
     }
-    
+
     public function setuju(Request $request)
     {
         $id_sid = $request->id;
@@ -125,5 +120,4 @@ class LayananSuratDesaController extends Controller
         $file = Storage::disk('public/sid')->get($file_name);
         return (new Response($file, 200));
     }
-
 }

@@ -31,11 +31,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use Throwable;
-use App\Models\DataDesa;
-use App\Models\LayananSuratDesa;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LayananSuratRequest;
+use App\Models\DataDesa;
+use App\Models\LayananSuratDesa;
+use Throwable;
 
 class PengesahanController extends Controller
 {
