@@ -88,7 +88,7 @@ class LayananSuratDesaController extends Controller
             'foreqr' => $foreqr,
          ];
         // $this->session->qrcode = $qrcode;
-       return qrcode_generate($qrcode['pathqr'], $qrcode['namaqr'], $qrcode['isiqr'], $qrcode['logoqr'], $qrcode['sizeqr'], $qrcode['foreqr']);
+        return qrcode_generate($qrcode['pathqr'], $qrcode['namaqr'], $qrcode['isiqr'], $qrcode['logoqr'], $qrcode['sizeqr'], $qrcode['foreqr']);
     }
 
     public function sisipkan_qrcode(&$qrcode, $buffer)
@@ -109,7 +109,7 @@ class LayananSuratDesaController extends Controller
             $placeholder_qr = '/' . $this->awalan_qr . '.*' . $akhiran_sementara . '/s';
             $buffer         = preg_replace($placeholder_qr, $qr_hex, $buffer);
         }
-     }
+    }
 
     public function setuju(Request $request)
     {

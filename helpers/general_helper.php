@@ -353,7 +353,6 @@ function terbilang($angka)
 function qrcode_generate($pathqr, $namaqr, $isiqr, $logoqr, $sizeqr, $foreqr)
 {
     $barcode = new TCPDF2DBarcode($isiqr, 'QRCODE,H');
-    
 
     if (! empty($foreqr)) {
         if ($foreqr[0] == '#') {
@@ -369,7 +368,7 @@ function qrcode_generate($pathqr, $namaqr, $isiqr, $logoqr, $sizeqr, $foreqr)
     $imgData  = $barcode->getBarcodePngData($sizeqr, $sizeqr, [$r, $g, $b]);
     $filename = $pathqr . $namaqr . '.png';
     file_put_contents($filename, $imgData);
-    
+
     //Ubah backround transparan ke warna putih supaya terbaca qrcode scanner
     $src_qr    = imagecreatefrompng($filename);
     $sizeqrx   = imagesx($src_qr);
@@ -383,7 +382,7 @@ function qrcode_generate($pathqr, $namaqr, $isiqr, $logoqr, $sizeqr, $foreqr)
     imagepng($backcol, $filename);
     imagedestroy($src_qr);
     imagedestroy($backcol);
-    
+
     //Tambah Logo
     $logopath = $logoqr; // Logo yg tampil di tengah QRCode
     $QR       = imagecreatefrompng($filename);
