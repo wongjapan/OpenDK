@@ -54,10 +54,10 @@
         },
         "classmap": [
             "database/seeds",
-            "database/factories"
-        ],
+            "database/factories"        ],
         "files": [
-            "helpers/general_helper.php"
+            "helpers/general_helper.php",
+            "vendor/tecnickcom/tcpdf/tcpdf_barcodes_2d.php"
         ]
     },
     "autoload-dev": {

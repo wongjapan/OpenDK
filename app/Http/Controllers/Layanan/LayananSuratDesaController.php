@@ -76,33 +76,40 @@ class LayananSuratDesaController extends Controller
         $config        = $data['config'];
         $foreqr        = '#000000';
         $nama_surat_qr = pathinfo($surat, PATHINFO_FILENAME);
-        $check_surat = route("layanan/suratdesa");
-        $logoqr = is_logo($this->profil->file_logo);
+        $check_surat = 'route("layanan/suratdesa")';
+        $logoqr = public_path('img/logo.png');
 
         $qrcode = [
-            'pathqr' => storage_path(),
+            'pathqr' => public_path('img/qrcode/'),
             'namaqr' => $nama_surat_qr,
             'isiqr'  => $check_surat,
             'logoqr' => $logoqr,
             'sizeqr' => 6,
             'foreqr' => $foreqr,
          ];
-        $this->session->qrcode = $qrcode;
-        qrcode_generate($qrcode['pathqr'], $qrcode['namaqr'], $qrcode['isiqr'], $qrcode['logoqr'], $qrcode['sizeqr'], $qrcode['foreqr']);
-
-        // ambil logo
-        // if ($this->profil->file_logo == '') {
-        //     $logo = public_path('img/no-image.png');
-        // } else {
-        //     $logo          = explode('/',$this->profil->file_logo);
-        //     $logo          = end($logo);
-        //     $logo          = storage_path('app/public/profil/file_logo/'.$logo);
-        // }
-
-        QrCode::eyeColor(0, 255, 100, 255, 0, 0, 0)
-        ->errorCorrection('H')
-        ->generate($nama_surat_qr, storage_path('app/public/qrcode/'.$nama_surat_qr.'.svg'));
+        // $this->session->qrcode = $qrcode;
+       return qrcode_generate($qrcode['pathqr'], $qrcode['namaqr'], $qrcode['isiqr'], $qrcode['logoqr'], $qrcode['sizeqr'], $qrcode['foreqr']);
     }
+
+    public function sisipkan_qrcode(&$qrcode, $buffer)
+    {
+        $awalan_qr = '89504e470d0a1a0a0000000d4948445200000084000000840802000000de';
+        $akhiran_qr        = '04c5cd360000000049454e44ae426082';
+        $akhiran_sementara = 'akhiran_qr';
+        $jml_qr            = substr_count($buffer, $akhiran_qr);
+        if ($jml_qr <= 0) {
+            return $buffer;
+        }
+
+        $qr_bytes = file_get_contents($qrcode);
+        $qr_hex   = implode('', unpack('H*', $qr_bytes));
+        for ($i = 0; $i < $jml_qr; $i++) {
+            $pos            = strpos($buffer, $akhiran_qr);
+            $buffer         = substr_replace($buffer, $akhiran_sementara, $pos, strlen($akhiran_qr));
+            $placeholder_qr = '/' . $this->awalan_qr . '.*' . $akhiran_sementara . '/s';
+            $buffer         = preg_replace($placeholder_qr, $qr_hex, $buffer);
+        }
+     }
 
     public function setuju(Request $request)
     {
@@ -112,7 +119,17 @@ class LayananSuratDesaController extends Controller
             'id_sid' => $id_sid,
             'data_desa_id' => $id_desa
         ])->first();
-        $this->createQrcode($surat);
+        $qrcode = $this->createQrcode($surat);
+        // dd(storage_path($surat->path));
+        // open file rtf
+        $handle = fopen(storage_path('app/'.$surat->path), 'rb');
+        $buffer = stream_get_contents($handle);
+        $this->sisipkan_qrcode($qrcode, $buffer);
+        dd($buffer);
+
+        $handle = fopen($surat, 'w+b');
+        fwrite($handle, $buffer);
+        fclose($handle);
     }
 
     public function downloadSurat($file_name)
