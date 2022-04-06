@@ -32,6 +32,7 @@
 use App\Models\Menu;
 use App\Models\Role;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 
 /**
  * Parsing url image dari rss feed description
@@ -362,6 +363,10 @@ function qrcode_generate($pathqr, $namaqr, $isiqr, $logoqr, $sizeqr, $foreqr)
         $r     = hexdec($split[0]);
         $g     = hexdec($split[1]);
         $b     = hexdec($split[2]);
+    }
+
+    if(!File::exists($pathqr)) {
+        File::makeDirectory($pathqr, 0755, true, true);
     }
 
     //Hasilkan QRCode
