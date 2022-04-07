@@ -40,32 +40,27 @@
 									<tr>
 										<td>
 											<a href="{{ route('layanan.suratdesa.downloadsurat', ['idLayanan' => str_slug($item->id_sid), 'id_desa' => str_slug($item->data_desa_id)] ) }}"
-												class="btn btn-flat bg-light-blue btn-sm" title="Daftar Dokumen" target="_blank"><i
+												class="btn btn-flat bg-light-blue btn-sm" title="Unduh Surat" target="_blank"><i
 													class="fa fa-file-word-o "></i>
-												</a>
-											<a href="" class="btn btn-flat bg-purple btn-sm" title="Unduh Surat RTF" target="_blank">
-												<i class="fa fa-file"></i>
 											</a>
-										
-										
-												<a href=" " target="_blank" class="btn btn-social btn-flat bg-olive btn-sm"
+											<button class="btn btn-flat bg-purple btn-sm daftar-dokumen" title="Daftar Dokumen"
+												data-id="{{ $item->id_sid }}" data-desa="{{ $item->data_desa_id }}">
+												<i class="fa fa-file"></i>
+											</button>
+											<a href=" " target="_blank" class="btn btn-social btn-flat bg-olive btn-sm"
 												title="Unduh Lampiran"><i class="fa fa-paperclip"></i> Lampiran
 											</a>
-											@if ($item->setujui != 1)
-											<a href="javascript:;" class="btn btn-social btn-flat bg-light-blue btn-sm setuju"
-											title="Setuju" data-id="{{  $item->id_sid }}" data-desa="{{ $item->data_desa_id }}" ><i class="fa fa-check-square-o"></i> Setujui
-										</a>
+											@if($item->setujui != 1)
+												<a href="javascript:;" class="btn btn-social btn-flat bg-light-blue btn-sm setuju"
+													title="Setuju" data-id="{{ $item->id_sid }}" data-desa="{{ $item->data_desa_id }}"><i
+														class="fa fa-check-square-o"></i> Setujui
+												</a>
 											@endif
-												
- 
-
 										</td>
 										<td>{{ $item->dataDesa->nama }}</td>
 										<td>{{ $item->nama_surat }}</td>
 										<td>{{ $item->nama_penduduk }}</td>
 										<td>{{ $item->nik }}</td>
-
-
 									</tr>
 								@endforeach
 							</table>
@@ -84,6 +79,42 @@
 		</div>
 	</div>
 </section>
+
+{{-- modal daftar dokumen --}}
+<div class="modal fade modal-dokumen" tabindex="-1" role="dialog" aria-labelledby="modalDaftarDokumen"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title w-100 font-weight-bold">Daftar Dokumen</h4>
+			</div>
+
+			<div class="modal-body mx-3">
+				<div class="table-responsive">
+					<table class="table table-bordered dataTable table-hover tabel-daftar">
+						<thead class="bg-gray disabled color-palette">
+							<tr>
+								<th>No</th>
+								<th>Aksi</th>
+								<th>Nama Dokumen</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+
+			</div>
+			<div class="modal-footer d-flex justify-content-center">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -91,7 +122,7 @@
 
 	<script>
 		$(function () {
-			$('a.setuju').click(function (e) { 
+			$('a.setuju').click(function (e) {
 				e.preventDefault();
 				let that = $(this);
 				let id_sid = that.data('id');
@@ -106,16 +137,50 @@
 					`,
 					confirmButtonText: 'Setuju',
 					focusConfirm: false,
-					 
+
 				}).then((result) => {
 					if (result.isConfirmed) {
 						$('form#surat').submit();
 					}
-			 
+
 				})
 			});
-		 
-		
+
+			$('button.daftar-dokumen').click(function (e) {
+				var that = $(this);
+				console.log(that.data('data_desa_id'));
+				$.ajax({
+					method: "Post",
+					url: "{{ route('layanan.suratdesa.dokumenajax') }}",
+					data: {
+						"_token": "{{ csrf_token() }}",
+						"id": that.data('id'),
+						"id_desa": that.data('desa')
+					},
+					dataType: "Json",
+					success: function (response) {
+						$('.modal-dokumen').find('tbody').empty();
+						if (response.status == true) {
+							$.each(response.data, function (i, value) {
+								var row = `
+										<tr>
+											<td class="padat">${i + 1}</td>
+											<td class="aksi"><a href="{{ route('layanan.suratdesa.downloadSyarat') }}?file=${value.path}" class="btn bg-purple btn-flat btn-sm" title="Unduh Dokumen"><i class="fa fa-download"></i></a></td>
+											<td>${value.nama}</td>
+										</tr>
+ 								`;
+								 $('.modal-dokumen').find('tbody').append(row);
+							});
+						}
+
+
+
+						$('.modal-dokumen').modal('show')
+					}
+				});
+			})
+
+
 		});
 	</script>
 @endpush

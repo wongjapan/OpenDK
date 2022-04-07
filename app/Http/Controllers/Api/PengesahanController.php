@@ -40,6 +40,7 @@ use Throwable;
 class PengesahanController extends Controller
 {
     public const PATHUPLOAD = "public/sid";
+    public const PATHUPLOADSYARAT = "public/syarat";
 
     /**
      * Create a new AuthController instance.
@@ -53,15 +54,26 @@ class PengesahanController extends Controller
 
     public function store(LayananSuratRequest $request)
     {
-        $desa = DataDesa::where('desa_id', '=', $request->kode_desa)->first();
+         $desa = DataDesa::where('desa_id', '=', $request->kode_desa)->first();
         if ($desa == null) {
             return response()->json(['status' => false, 'message' => 'Desa tidak terdaftar' ]);
         }
-
+        
         try {
             // Upload file zip temporary.
             $file = $request->file('surat');
             $upload = $file->storeAs(self::PATHUPLOAD, $name = $file->getClientOriginalName());
+            $file_syarat = [];
+            $daftar_syarat = json_decode($request->daftar_syarat);
+            foreach ($request->syarat as $key => $filesyarat) { 
+                $upload_syarat = $filesyarat->storeAs(self::PATHUPLOADSYARAT, $name = $filesyarat->getClientOriginalName());
+                array_push($file_syarat, [
+                        'path' => $filesyarat->getClientOriginalName(),
+                        'nama' => $daftar_syarat[$key]->syarat_nama
+                    ]
+                );
+            }
+
             LayananSuratDesa::insert([
                 'id_sid' => $request->id_sid,
                 'data_desa_id' => $desa->id,
@@ -69,10 +81,11 @@ class PengesahanController extends Controller
                 'nama_surat' => $request->nama_surat,
                 'nik' => $request->nik,
                 'nama_penduduk' => $request->nama_penduduk,
-
+                'syarat' => json_encode($file_syarat)
             ]);
             return response()->json(['status' => true, 'message' => 'berhasil kirim dokumen' ]);
         } catch (Throwable $e) {
+            
             response()->json(['status' => false, 'message' => 'error' ]);
         }
     }

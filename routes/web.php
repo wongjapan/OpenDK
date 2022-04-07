@@ -463,6 +463,8 @@ Route::group(['middleware' => 'installed'], function () {
                 Route::get('/', ['as' => 'layanan.suratdesa.index', 'uses' => 'LayananSuratDesaController@index']);
                 Route::post('setuju', ['as' => 'layanan.suratdesa.setuju', 'uses' => 'LayananSuratDesaController@setuju']);
                 Route::get('{idLayanan}/{id_desa}/download', 'LayananSuratDesaController@downloadSurat')->name('layanan.suratdesa.downloadsurat');
+                Route::post('dokumenajax', 'LayananSuratDesaController@dokumenAjax')->name('layanan.suratdesa.dokumenajax');
+                Route::get('syarat', 'LayananSuratDesaController@downloadSyarat')->name('layanan.suratdesa.downloadSyarat');
             });
         });
 

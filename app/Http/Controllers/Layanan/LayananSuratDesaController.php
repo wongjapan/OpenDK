@@ -39,6 +39,8 @@ use Illuminate\Support\Facades\Storage;
 
 class LayananSuratDesaController extends Controller
 {
+    public const PATHUPLOADSYARAT = "public/syarat/";
+
     public function index()
     {
         $page_title       = 'Lyanan Surat Desa';
@@ -47,11 +49,7 @@ class LayananSuratDesaController extends Controller
         return view('layanan.layanansuratdesa.index', compact('page_title', 'page_description', 'surat'));
     }
 
-    public function update()
-    {
-        // return redirect()->route('informasi.regulasi.show', $regulasi->id)->with('success', 'Regulasi berhasil disimpan!');
-    }
-
+     
     public function downloadSurat($idLayanan, $id_desa)
     {
         $getFile = LayananSuratDesa::where([
@@ -150,8 +148,33 @@ class LayananSuratDesaController extends Controller
             report($e);
             return back()->withInput()->with('error', 'generate file gagal');
         }
-        
- 
+    }
+
+    public function dokumenAjax(Request $request)
+    {
+        if (!$request->ajax()) {
+            response()->json(['status' => false, 'message' => 'tidak mempunyai hak akses' ]);
+        }
+        try {
+            $id_sid = (int) $request->id;
+            $id_desa = (int) $request->id_desa;
+            $layanan = LayananSuratDesa::where([
+                'id_sid' => $id_sid,
+                'data_desa_id' => $id_desa
+            ])->first();
+          
+            $daftar_Syarat = json_decode($layanan->syarat);
+            return response()->json(['status' => true, 'data' => $daftar_Syarat]);
+        } catch (\Exception $e) {
+            report($e);
+            return response()->json(['status' => false, 'message' => $e ]);
+        }
+    }
+
+    public function downloadSyarat(Request $request)
+    {
+        $file = $request->file;
+        return response()->download(storage_path('app/'.self::PATHUPLOADSYARAT.$file));
     }
  
 }
