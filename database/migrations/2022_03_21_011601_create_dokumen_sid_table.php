@@ -49,6 +49,7 @@ class CreateDokumenSidTable extends Migration
             $table->string('nik', 16);
             $table->string('nama_penduduk', 100);
             $table->string('path', 255);
+            $table->string('lampiran', 255)->nullable(true);
             $table->json('syarat')->nullable();
             $table->integer('setujui')->default(0);
             $table->dateTime('imported_at')->nullable(true);

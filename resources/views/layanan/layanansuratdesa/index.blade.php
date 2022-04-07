@@ -39,7 +39,7 @@
 								@foreach($surat as $item)
 									<tr>
 										<td>
-											<a href="{{ route('layanan.suratdesa.downloadsurat', ['idLayanan' => str_slug($item->id_sid), 'id_desa' => str_slug($item->data_desa_id)] ) }}"
+											<a href="{{ route('layanan.suratdesa.downloadsurat', ['idLayanan' => str_slug($item->id_sid), 'id_desa' => str_slug($item->data_desa_id), 'lampiran' => false] ) }}"
 												class="btn btn-flat bg-light-blue btn-sm" title="Unduh Surat" target="_blank"><i
 													class="fa fa-file-word-o "></i>
 											</a>
@@ -47,9 +47,13 @@
 												data-id="{{ $item->id_sid }}" data-desa="{{ $item->data_desa_id }}">
 												<i class="fa fa-file"></i>
 											</button>
-											<a href=" " target="_blank" class="btn btn-social btn-flat bg-olive btn-sm"
+											@if ($item->lampiran != null)
+											<a href="{{ route('layanan.suratdesa.downloadsurat', ['idLayanan' => str_slug($item->id_sid), 'id_desa' => str_slug($item->data_desa_id), 'lampiran' => true] ) }}" target="_blank" class="btn btn-social btn-flat bg-olive btn-sm"
 												title="Unduh Lampiran"><i class="fa fa-paperclip"></i> Lampiran
 											</a>
+											@endif
+
+											 
 											@if($item->setujui != 1)
 												<a href="javascript:;" class="btn btn-social btn-flat bg-light-blue btn-sm setuju"
 													title="Setuju" data-id="{{ $item->id_sid }}" data-desa="{{ $item->data_desa_id }}"><i

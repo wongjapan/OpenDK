@@ -63,6 +63,8 @@ class PengesahanController extends Controller
             // Upload file zip temporary.
             $file = $request->file('surat');
             $upload = $file->storeAs(self::PATHUPLOAD, $name = $file->getClientOriginalName());
+            
+            // Upload file syarata
             $file_syarat = [];
             $daftar_syarat = json_decode($request->daftar_syarat);
             foreach ($request->syarat as $key => $filesyarat) { 
@@ -74,6 +76,12 @@ class PengesahanController extends Controller
                 );
             }
 
+            // load file lampiran jika ada
+            if (isset($request->lampiran)) {
+                $lampiran = $request->file('lampiran');
+                $upload_lampiran = $lampiran->storeAs(self::PATHUPLOAD, $name = $lampiran->getClientOriginalName());
+            }
+           
             LayananSuratDesa::insert([
                 'id_sid' => $request->id_sid,
                 'data_desa_id' => $desa->id,
@@ -81,7 +89,8 @@ class PengesahanController extends Controller
                 'nama_surat' => $request->nama_surat,
                 'nik' => $request->nik,
                 'nama_penduduk' => $request->nama_penduduk,
-                'syarat' => json_encode($file_syarat)
+                'syarat' => json_encode($file_syarat),
+                'lampiran' => $upload_lampiran ?? null
             ]);
             return response()->json(['status' => true, 'message' => 'berhasil kirim dokumen' ]);
         } catch (Throwable $e) {

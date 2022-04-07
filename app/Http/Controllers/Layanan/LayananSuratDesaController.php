@@ -50,14 +50,17 @@ class LayananSuratDesaController extends Controller
     }
 
      
-    public function downloadSurat($idLayanan, $id_desa)
+    public function downloadSurat($idLayanan, $id_desa, $lampiran = false)
     {
         $getFile = LayananSuratDesa::where([
             'id_sid' => $idLayanan,
             'data_desa_id' => $id_desa
         ] )->firstOrFail();
-         
-        return response()->download(storage_path('app/'.$getFile->path));
+         if ($lampiran) {
+            return response()->download(storage_path('app/'.$getFile->lampiran));
+         } else {
+            return response()->download(storage_path('app/'.$getFile->path));
+         }
     }
 
     /**
