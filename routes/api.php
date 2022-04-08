@@ -83,7 +83,7 @@ Route::group(['prefix' => 'v1'], function () {
     /**
      * Surat Opensid
      */
-    Route::group(['prefix' => 'pengesahan'], function () {
-        Route::post('/', 'Api\PengesahanController@store');
+    Route::group(['prefix' => 'layanan-desa'], function () {
+        Route::post('/', 'Api\LayananDesaController@store');
     });
 });

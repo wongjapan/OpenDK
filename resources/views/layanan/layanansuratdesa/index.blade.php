@@ -154,7 +154,6 @@
 					if (result.isConfirmed) {
 						$('form#surat').submit();
 					}
-
 				})
 			});
 
@@ -184,9 +183,7 @@
 								$('.modal-dokumen').find('tbody').append(row);
 							});
 						}
-
-
-
+				
 						$('.modal-dokumen').modal('show')
 					}
 				});
