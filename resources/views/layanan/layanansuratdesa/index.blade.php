@@ -39,27 +39,30 @@
 								@foreach($surat as $item)
 									<tr>
 										<td>
-											<a href="{{ route('layanan.suratdesa.downloadsurat', ['idLayanan' => str_slug($item->id_sid), 'id_desa' => str_slug($item->data_desa_id), 'lampiran' => false] ) }}"
-												class="btn btn-flat bg-light-blue btn-sm" title="Unduh Surat" target="_blank"><i
-													class="fa fa-file-word-o "></i>
-											</a>
-											<button class="btn btn-flat bg-purple btn-sm daftar-dokumen" title="Daftar Dokumen"
+											@if($item->setujui != 1)
+												<a href="javascript:;" class="btn btn-social btn-flat bg-light-blue btn-sm setuju"
+													title="Setuju" data-id="{{ $item->id_sid }}" data-desa="{{ $item->data_desa_id }}" data-nama="{{ $item->nama_surat }}" data-penduduk="{{ $item->nama_penduduk }}"><i
+														class="fa fa-check-square-o"></i> Setujui
+												</a>
+											@else
+												<a href="{{ route('layanan.suratdesa.downloadsurat', ['idLayanan' => str_slug($item->id_sid), 'id_desa' => str_slug($item->data_desa_id), 'lampiran' => false] ) }}"
+													class="btn btn-flat bg-light-blue btn-sm" title="Unduh Surat" target="_blank"><i
+														class="fa fa-file-word-o "></i>
+												</a>
+											@endif
+											<button class="btn btn-flat bg-purple btn-sm daftar-dokumen" title="Lihat Dokumen"
 												data-id="{{ $item->id_sid }}" data-desa="{{ $item->data_desa_id }}">
 												<i class="fa fa-file"></i>
 											</button>
-											@if ($item->lampiran != null)
-											<a href="{{ route('layanan.suratdesa.downloadsurat', ['idLayanan' => str_slug($item->id_sid), 'id_desa' => str_slug($item->data_desa_id), 'lampiran' => true] ) }}" target="_blank" class="btn btn-social btn-flat bg-olive btn-sm"
-												title="Unduh Lampiran"><i class="fa fa-paperclip"></i> Lampiran
-											</a>
-											@endif
-
-											 
-											@if($item->setujui != 1)
-												<a href="javascript:;" class="btn btn-social btn-flat bg-light-blue btn-sm setuju"
-													title="Setuju" data-id="{{ $item->id_sid }}" data-desa="{{ $item->data_desa_id }}"><i
-														class="fa fa-check-square-o"></i> Setujui
+											@if($item->lampiran != null)
+												<a href="{{ route('layanan.suratdesa.downloadsurat', ['idLayanan' => str_slug($item->id_sid), 'id_desa' => str_slug($item->data_desa_id), 'lampiran' => true] ) }}"
+													target="_blank" class="btn btn-social btn-flat bg-olive btn-sm" title="Unduh Lampiran"><i
+														class="fa fa-paperclip"></i> Lampiran
 												</a>
 											@endif
+
+
+
 										</td>
 										<td>{{ $item->dataDesa->nama }}</td>
 										<td>{{ $item->nama_surat }}</td>
@@ -90,7 +93,7 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				
+
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -131,17 +134,22 @@
 				let that = $(this);
 				let id_sid = that.data('id');
 				let id_desa = that.data('desa');
+				let judul = that.data('nama');
+				let penduduk = that.data('penduduk');
 				Swal.fire({
-					title: 'Login Form',
+					title: 'Setujui surat ini?',
 					html: ` 
 					{!! Form::open(['id' => 'surat', 'method' => 'POST', 'route'=>  'layanan.suratdesa.setuju']) !!}
 					<input type="hidden" name="id" value=${id_sid} >
 					<input type="hidden" name="iddesa" value=${id_desa} >
+					<h4>Judul surat : ${judul}</h4>
+					<h4>Diajukan oleh : ${penduduk}</h4>
 					{!! Form::close() !!}
 					`,
 					confirmButtonText: 'Setuju',
 					focusConfirm: false,
-
+					showCancelButton: true,
+					cancelButtonText:'Batal',
 				}).then((result) => {
 					if (result.isConfirmed) {
 						$('form#surat').submit();
@@ -173,7 +181,7 @@
 											<td>${value.nama}</td>
 										</tr>
  								`;
-								 $('.modal-dokumen').find('tbody').append(row);
+								$('.modal-dokumen').find('tbody').append(row);
 							});
 						}
 
