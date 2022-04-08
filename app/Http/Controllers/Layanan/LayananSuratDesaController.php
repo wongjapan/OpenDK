@@ -31,11 +31,9 @@
 
 namespace App\Http\Controllers\Layanan;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Models\LayananSuratDesa;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage; 
+use App\Models\LayananSuratDesa;
+use Illuminate\Http\Request;
 
 class LayananSuratDesaController extends Controller
 {
@@ -49,18 +47,17 @@ class LayananSuratDesaController extends Controller
         return view('layanan.layanansuratdesa.index', compact('page_title', 'page_description', 'surat'));
     }
 
-     
     public function downloadSurat($idLayanan, $id_desa, $lampiran = false)
     {
         $getFile = LayananSuratDesa::where([
             'id_sid' => $idLayanan,
             'data_desa_id' => $id_desa
-        ] )->firstOrFail();
-         if ($lampiran) {
+        ])->firstOrFail();
+        if ($lampiran) {
             return response()->download(storage_path('app/'.$getFile->lampiran));
-         } else {
+        } else {
             return response()->download(storage_path('app/'.$getFile->path));
-         }
+        }
     }
 
     /**
@@ -100,7 +97,7 @@ class LayananSuratDesaController extends Controller
     public function sisipkan_qrcode($qrcode, &$buffer)
     {
         $awalan_qr = '89504e470d0a1a0a0000000d4948445200000082000000820803000000bddde';
-                      
+
         $akhiran_qr        = 'f010600145f226d416367500000000049454e44ae426082';
         $akhiran_sementara = 'akhiran_qr';
         $jml_qr            = substr_count($buffer, $akhiran_qr);
@@ -146,7 +143,6 @@ class LayananSuratDesaController extends Controller
             ]);
 
             return redirect()->route('layanan.suratdesa.index')->with('success', 'dokumen berhasil di setujui');
-
         } catch (\Exception $e) {
             report($e);
             return back()->withInput()->with('error', 'generate file gagal');
@@ -165,7 +161,7 @@ class LayananSuratDesaController extends Controller
                 'id_sid' => $id_sid,
                 'data_desa_id' => $id_desa
             ])->first();
-          
+
             $daftar_Syarat = json_decode($layanan->syarat);
             return response()->json(['status' => true, 'data' => $daftar_Syarat]);
         } catch (\Exception $e) {
@@ -179,5 +175,4 @@ class LayananSuratDesaController extends Controller
         $file = $request->file;
         return response()->download(storage_path('app/'.self::PATHUPLOADSYARAT.$file));
     }
- 
 }

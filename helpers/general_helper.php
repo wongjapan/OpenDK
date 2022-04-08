@@ -365,7 +365,7 @@ function qrcode_generate($pathqr, $namaqr, $isiqr, $logoqr, $sizeqr, $foreqr)
         $b     = hexdec($split[2]);
     }
 
-    if(!File::exists($pathqr)) {
+    if (!File::exists($pathqr)) {
         File::makeDirectory($pathqr, 0755, true, true);
     }
 
