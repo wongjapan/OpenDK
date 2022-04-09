@@ -44,12 +44,12 @@
 													title="Setuju" data-id="{{ $item->id_sid }}" data-desa="{{ $item->data_desa_id }}" data-nama="{{ $item->nama_surat }}" data-penduduk="{{ $item->nama_penduduk }}"><i
 														class="fa fa-check-square-o"></i> Setujui
 												</a>
-											@else
-												<a href="{{ route('layanan.suratdesa.downloadsurat', ['idLayanan' => str_slug($item->id_sid), 'id_desa' => str_slug($item->data_desa_id), 'lampiran' => false] ) }}"
+												@endif
+												<a href="{{ route('layanan.suratdesa.downloadsurat', ['idLayanan' => str_slug($item->id_sid), 'id_desa' => str_slug($item->data_desa_id), 'lampiran' => 0] ) }}"
 													class="btn btn-flat bg-light-blue btn-sm" title="Unduh Surat" target="_blank"><i
 														class="fa fa-file-word-o "></i>
 												</a>
-											@endif
+											
 											<button class="btn btn-flat bg-purple btn-sm daftar-dokumen" title="Lihat Dokumen"
 												data-id="{{ $item->id_sid }}" data-desa="{{ $item->data_desa_id }}">
 												<i class="fa fa-file"></i>
@@ -60,9 +60,6 @@
 														class="fa fa-paperclip"></i> Lampiran
 												</a>
 											@endif
-
-
-
 										</td>
 										<td>{{ $item->dataDesa->nama }}</td>
 										<td>{{ $item->nama_surat }}</td>

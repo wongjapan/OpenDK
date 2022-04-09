@@ -69,6 +69,21 @@
                 </a>
             </div>
         </div>
+
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-teal">
+                <div class="inner">
+                    <h3>{{ $data['layanan_surat'] }}</h3>
+                    <p>Layanan Surat</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-envelope"></i>
+                </div>
+                <a href="{{ route('layanan.suratdesa.index') }}" class="small-box-footer">
+                    Selengkapnya <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 @endsection

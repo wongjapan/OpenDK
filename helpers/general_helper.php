@@ -31,6 +31,7 @@
 
 use App\Models\Menu;
 use App\Models\Role;
+use App\Models\DataDesa;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 
@@ -406,4 +407,21 @@ function qrcode_generate($pathqr, $namaqr, $isiqr, $logoqr, $sizeqr, $foreqr)
     imagepng($QR, $filename);
     imagedestroy($QR);
     return $filename;
+}
+
+/**
+ * Parsing url image dari rss feed description
+ *
+ * @param string $kodedesa
+ * @return mixed
+ */
+if (!function_exists('verif_desa')) {
+    function verif_desa(string $kodedesa)
+    {
+        $desa = DataDesa::where('desa_id', $kodedesa)->first();
+        if ($desa == null) {
+            return false;
+        }
+        return $desa;
+    }
 }

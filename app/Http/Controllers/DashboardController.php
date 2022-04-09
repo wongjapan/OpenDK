@@ -31,10 +31,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Program;
 use App\Models\DataDesa;
 use App\Models\Keluarga;
 use App\Models\Penduduk;
-use App\Models\Program;
+use App\Models\LayananSuratDesa;
 
 class DashboardController extends Controller
 {
@@ -47,6 +48,7 @@ class DashboardController extends Controller
             'penduduk' => Penduduk::hidup()->count(),
             'keluarga' => Keluarga::count(),
             'program_bantuan' => Program::count(),
+            'layanan_surat' => LayananSuratDesa::where('setujui')->count(),
         ];
 
         return view('dashboard.index', compact('page_title', 'data'));

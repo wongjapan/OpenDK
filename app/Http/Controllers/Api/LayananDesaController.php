@@ -31,11 +31,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\LayananSuratRequest;
-use App\Models\DataDesa;
-use App\Models\LayananSuratDesa;
 use Throwable;
+use App\Models\DataDesa;
+use Illuminate\Http\Request;
+use App\Models\LayananSuratDesa;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\SuratVerifRequest;
+use App\Http\Requests\LayananSuratRequest;
+use Exception;
 
 class LayananDesaController extends Controller
 {
@@ -54,10 +57,9 @@ class LayananDesaController extends Controller
 
     public function store(LayananSuratRequest $request)
     {
-        $desa = DataDesa::where('desa_id', '=', $request->kode_desa)->first();
-        if ($desa == null) {
+        $desa = verif_desa($request->kode_desa);
+        if (!$desa) 
             return response()->json(['status' => false, 'message' => 'Desa tidak terdaftar' ]);
-        }
 
         try {
             // Upload file zip temporary.
@@ -95,8 +97,30 @@ class LayananDesaController extends Controller
                 'lampiran' => $upload_lampiran ?? null
             ]);
             return response()->json(['status' => true, 'message' => 'berhasil kirim dokumen' ]);
-        } catch (Throwable $e) {
+        } catch (Exception $e) {
+            report($e);
             response()->json(['status' => false, 'message' => 'error' ]);
+        }
+    }
+
+    public function listSuratVerif(SuratVerifRequest $request)
+    {
+        $desa = verif_desa($request->kode_desa);
+    
+        if (!$desa) 
+            return response()->json(['status' => false, 'message' => 'Desa tidak terdaftar' ]);
+
+        try {
+            $layanan = LayananSuratDesa::where([
+                'data_desa_id' => $desa->id,
+                'setujui' => 1
+                ])
+                ->get();
+
+            return response()->json(['status' => true, 'data' => $layanan ]);
+        } catch (Exception $e) {
+            report($e);
+            return response()->json(['status' => false, 'message' => 'error' ]);
         }
     }
 }

@@ -85,5 +85,6 @@ Route::group(['prefix' => 'v1'], function () {
      */
     Route::group(['prefix' => 'layanan-desa'], function () {
         Route::post('/', 'Api\LayananDesaController@store');
+        Route::get('/', 'Api\LayananDesaController@listSuratVerif');
     });
 });
