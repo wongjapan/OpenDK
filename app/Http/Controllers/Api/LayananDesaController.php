@@ -31,13 +31,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use Throwable;
-use App\Models\DataDesa;
-use Illuminate\Http\Request;
-use App\Models\LayananSuratDesa;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SuratVerifRequest;
 use App\Http\Requests\LayananSuratRequest;
+use App\Http\Requests\SuratVerifRequest;
+use App\Models\LayananSuratDesa;
 use Exception;
 
 class LayananDesaController extends Controller
@@ -58,8 +55,9 @@ class LayananDesaController extends Controller
     public function store(LayananSuratRequest $request)
     {
         $desa = verif_desa($request->kode_desa);
-        if (!$desa) 
+        if (!$desa) {
             return response()->json(['status' => false, 'message' => 'Desa tidak terdaftar' ]);
+        }
 
         try {
             // Upload file zip temporary.
@@ -106,9 +104,10 @@ class LayananDesaController extends Controller
     public function listSuratVerif(SuratVerifRequest $request)
     {
         $desa = verif_desa($request->kode_desa);
-    
-        if (!$desa) 
+
+        if (!$desa) {
             return response()->json(['status' => false, 'message' => 'Desa tidak terdaftar' ]);
+        }
 
         try {
             $layanan = LayananSuratDesa::where([
